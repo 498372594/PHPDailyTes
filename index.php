@@ -1,8 +1,5 @@
-<?php
-$pdo=new PDO("mysql:host=127.0.0.1;dbname=1611d","root","root");
-@$city=$_GET['city'];
-
-$data=$pdo->query("select * from ditu where city='$city'")->fetch();
+<?php 
+$code=$_GET['code'];
 
 ?>
 <!DOCTYPE html>
@@ -12,30 +9,23 @@ $data=$pdo->query("select * from ditu where city='$city'")->fetch();
 	<title>Document</title>
 </head>
 <body>
-<input type="hidden" id="lng" value="<?php echo $data['lng'] ?>">
-<input type="hidden" id="lat" value="<?php echo $data['lat'] ?>">
-	<form action="add.php" >
+		<form action="add.php" >
 		<table>
 			<tr>
-				<td><input type="text" name="city"></td></tr>
-				<tr><td><script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=9mPQNpCeTmKvPVmMsHuco1STKlPZjWkN"></script>
-				<div id="allmap" style="width:320px;height:120px"></div>
-				<script type="text/javascript">
-	// 百度地图API功能
-	var map = new BMap.Map("allmap");    // 创建Map实例
-	map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
-	//添加地图类型控件
+				<td>用户名</td>
+				<td><input type="text"></td>
+			</tr>
+			<input type="hidden" value="<?php echo $code ?>" name="code">
+			<tr>
+				<td>密码</td>
+				<td><input type="text"></td>
+			</tr>
 
-	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-	var new_point = new BMap.Point(document.getElementById("lng").value,document.getElementById("lat").value);
-			var marker = new BMap.Marker(new_point);  // 创建标注
-			map.addOverlay(marker);              // 将标注添加到地图中
-			map.panTo(new_point);      
-</script><input type="submit"></td>
-			
-			
-		</table>
-	</form>
+			<tr>
+				<td><input type="submit"></td>
+				<td><a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101353491&redirect_uri=http%3A%2F%2Fwww.iwebshop.com%2Findex.php&state=123"><img src="http://www.iwebshop.com/qq.png" alt="" width="30px" height="30"></a></td>
+			</tr>
+			</table>
+		</form>
 </body>
-
 </html>

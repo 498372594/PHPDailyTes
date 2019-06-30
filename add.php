@@ -1,23 +1,35 @@
 <?php
-$city=$_GET['city'];
+$appid="101353491";
+session_start();
+$appkey="df4e46ba7da52f787c6e3336d30526e4";
 
+$url="http://www.iwebshop.com/index.php";
+$urls=URLEncode($url);
+	
+	
+	$code=$_GET['code'];
+	//获取code值
+	$token="https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id={$appid}&client_secret={$appkey}&code={$code}&redirect_uri={$url}";
+	$tok=file_get_contents($token);
+	//字符串转为数组
+	$toke=explode("&",$tok);
+	$to=explode("=",$toke[0]);
+	//字符串转为数组
+	$tokenn=$to[1];
+	//获取openid
+	$open="https://graph.qq.com/oauth2.0/me?access_token={$tokenn}";
+	$openi=file_get_contents($open);
+	//截取字符串
+	 $openid=substr($openi,-38,32);
+	 $info="https://graph.qq.com/user/get_user_info?access_token={$tokenn}&oauth_consumer_key={$appid}&openid={$openid}";
+	 $userinfo=file_get_contents($info);
+	 //转换为数组
+	 $arrinfo=json_decode($userinfo,true);
+	 $_SESSION['name']=$arrinfo['nickname'];
 
-
-
-
-$url="http://api.map.baidu.com/geocoder/v2/?address={$city}&output=json&ak=r4gLPfHgd4GaddyF1f6oIappbHX6qriA";
-$urls=file_get_contents($url);
-$json=json_decode($urls,true);
-$lng=$json['result']['location']['lng'];
-$lat=$json['result']['location']['lat'];
-$pdo=new PDO("mysql:host=127.0.0.1;dbname=1611d","root","root");
-if($pdo->query("select * from ditu where city='$city'")->fetch()){
-	$pdo->query("select * from ditu where city='$city'")->fetch();
-}else if($city!=''){
-	$pdo->exec("insert into ditu(city,lng,lat)values('$city','$lng','$lat')");
-}
-
-
-
-
-?><a href="index.php?city=<?php echo $city ?>">添加成功</a>;
+	 if(empty($arrinfo['nickname'])){
+	 	
+	 	echo "<a>登陆失败</a>";
+	 }else{
+	 	echo $_SESSION['name']."<a href='show.php'>登陆成功</a>";	
+	 }
