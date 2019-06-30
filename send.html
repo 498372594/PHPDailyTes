@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<input type="file" id="sc">
+</body>
+</html>
+<script>
+	document.getElementById('sc').onchange=function(){
+		  file=this.files[0];
+		
+		  num=1;
+		  start=0;
+		  len=1024*1024;
+		  end=start+len;
+		  blob=cutfile();
+		    console.log(blob);
+		    sendfile();
+	}
+
+	function cutfile(){
+		  blob=file.slice(start,end);
+		  start=end;
+		  end=start+len;
+		  return blob;
+	}
+	function sendfile(){
+		 xml=new FormData();
+		 xml.append("num",num);
+		 xml.append("blob",blob);
+		 xml.append("count",Math.ceil(file.size/len));
+		 ajax=new XMLHttpRequest();
+		 ajax.open("post","add.php",true);
+		 ajax.send(xml);
+		 if(start<file.size){
+		 	 t=setTimeout(function(){
+		 	 	num++;
+		 	 	cutfile();
+		 	 	sendfile();
+		 	 },1000);
+		 }else{
+		 	clearTimeout(t);
+		 }
+	}
+</script>
